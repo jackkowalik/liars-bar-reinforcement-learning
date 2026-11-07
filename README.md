@@ -5,6 +5,9 @@ see. It went from a 0 rating to the leaderboard in about 24 hours (~3000 rating 
 
 ## Quick start
 
+To run the bot in the game rather than the simulator, see [INSTALL.md](INSTALL.md); prebuilt `liars.exe`, the mod DLL and
+the weights are in the Releases page.
+
 ```
 git clone https://github.com/jackkowalik/liars-bar-deck-reinforcement-learning.git
 cd liars-bar-deck-reinforcement-learning/rust

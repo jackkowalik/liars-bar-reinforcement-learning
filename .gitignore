@@ -4,3 +4,4 @@ obj/
 __pycache__/
 *.pt
 *.log
+dist/
