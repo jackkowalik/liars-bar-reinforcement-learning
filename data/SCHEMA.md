@@ -11,8 +11,8 @@ Cards: `K`, `Q`, `A`, `Joker` (matches any table card), `Devil` (Devil-mode card
 
 ## plays_public.jsonl (15,314 rows, all labelled, hands known)
 
-One row per claim (throw) by any player in the 487 games with hand snapshots. `plays_unlabelled.jsonl` (5,616 rows) has the
-same fields for the earliest 86 games, where hands were not recorded and `was_bluff`, `hands`, `claimer_hand` and `thrown` are null.
+One row per claim (throw) by any player in the 522 games with hand snapshots. `plays_unlabelled.jsonl` (5,616 rows) has the
+same fields for 194 earlier games, where hands were not recorded and `was_bluff`, `hands`, `claimer_hand` and `thrown` are null.
 
 | field | meaning |
 |---|---|
