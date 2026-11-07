@@ -3,6 +3,27 @@
 A bot that plays Liar's Deck (Devil mode) in the ranked queue of Liar's Bar using only what a human player at the table can
 see. It went from a 0 rating to the leaderboard in about 24 hours (~3000 rating points). 
 
+## Quick start
+
+```
+git clone https://github.com/jackkowalik/liars-bar-deck-reinforcement-learning.git
+cd liars-bar-deck-reinforcement-learning/rust
+cargo build --release
+target/release/liars fiteval --net ../weights/devil_mlp --opp rankedfit --players 4 --games 3000
+```
+
+That runs the network that played ranked against the opponent population fitted to the human logs and prints its win rate,
+pulls per game by cause and claim mix. `--players 3` or `2` for smaller tables, `--seed N` to change the deal order.
+
+```
+python -c "import json; r=json.loads(open('data/plays_public.jsonl').readline()); print(r['table'], r['claimer_hand'], r['thrown'], r['was_bluff'])"
+```
+
+Requirements: Rust stable for the simulator and advisor. Python 3.11 with PyTorch and `maturin` (to build `pyliars/`) for
+the trainers in `nn/`. .NET 6 SDK, MelonLoader and a Steam install of Liar's Bar for the mod in `mod/`, whose project file
+resolves the game's assemblies from the default Steam path. The live tooling (advisor, mod, watchdog) is Windows-only and
+uses `C:\liars` as its working directory; the simulator, harness and dataset have no such dependency.
+
 ## Components
 
 - **Game engine and simulator** (`rust/src/engine.rs`): Liar's Deck with Devil mode, 6-chamber revolver, forced calls,
@@ -86,11 +107,6 @@ at the moment of the claim, the claimer's hand and the cards actually thrown (5,
 has the 4,439 claims that were called, with the revealed cards and the same hidden hands. Player names are pseudonymised
 consistently across both files; see `data/SCHEMA.md`. `weights/` holds the networks the Rust code runs: `devil_mlp` (the one that played ranked),
 `devil_tnet_r1v1` (the transformer) and `basic_ppo2` (non-Devil tables).
-
-```
-cd rust && cargo build --release
-target/release/liars fiteval --net ../weights/devil_mlp --opp rankedfit --players 4 --games 3000
-```
 
 ## Layout
 
