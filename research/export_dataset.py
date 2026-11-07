@@ -1,8 +1,8 @@
 """Export the labelled human-play dataset for release.
 Input: data/plays.jsonl (every claim in every logged game, with was_bluff from post-hoc labelling) and data/reveals.jsonl
 (claims that were called, with the revealed cards). Output: data/plays_public.jsonl, data/calls_public.jsonl.
-Player names are replaced by stable pseudonyms (salted hash); fields derived from other players' hidden cards are dropped
-(all_hands, claimer_hand, played_cards, holders). The bot's own hand is kept (it is the bot's information).
+Player names are replaced by stable pseudonyms (salted hash); fields are pseudonymised consistently across files. Hidden hands (every seat's cards at the time of the claim, the claimer's hand
+and the cards actually thrown) are included where known: they are the ground truth behind the labels.
 Usage: python export_dataset.py <salt> [out_dir]"""
 import json, hashlib, sys, os, collections
 salt = sys.argv[1] if len(sys.argv) > 1 else "liars-bar-bot"
@@ -11,6 +11,18 @@ os.makedirs(out, exist_ok=True)
 def pid(name):
     if name is None: return None
     return "p" + hashlib.sha1((salt + "|" + str(name)).encode("utf8")).hexdigest()[:10]
+def seats_of(players):
+    out = []
+    for x in players or []:
+        if isinstance(x, dict):
+            out.append(dict(seat=x.get("p"), player=pid(x.get("name")), alive=x.get("alive"), cards=x.get("cards"), pulls=x.get("pulls"),
+                            is_bot=x.get("me"), tier=x.get("rank"), level=x.get("level")))
+        else:
+            out.append(dict(player=pid(x)))
+    return out
+def hands_of(ah):
+    if not ah: return None
+    return {pid(name): hand for name, hand in ah.items()}
 def gid(game):
     return "g" + hashlib.sha1((salt + "|" + str(game)).encode("utf8")).hexdigest()[:10]
 np = nc = 0; names = set()
@@ -28,8 +40,9 @@ with open(f"{out}/plays_public.jsonl", "w", encoding="utf8") as w:
             if "name" in c: c["player"] = pid(c.pop("name"))
             cb.append(c)
         o = dict(game=gid(game), t=r.get("t"), mode=r.get("mode"), ranked=r.get("ranked"), seats=r.get("game_players"),
-                 round=r.get("round"), table=r.get("table"), players=[pid(x) for x in (r.get("players") or [])],
+                 round=r.get("round"), table=r.get("table"), players=seats_of(r.get("players")),
                  n_alive=r.get("n_alive"), claims_before=cb, play=play, play_is_bot=r.get("play_is_me"),
+                 claimer_hand=r.get("claimer_hand"), thrown=r.get("played_cards"), hands=hands_of(r.get("all_hands")),
                  bot_hand=r.get("my_hand") if r.get("play_is_me") is not None else None, bot_matching=r.get("my_real"),
                  was_bluff=r.get("was_bluff"), label_source=r.get("label_source"))
         w.write(json.dumps(o, ensure_ascii=False) + "\n"); np += 1
@@ -46,8 +59,8 @@ with open(f"{out}/calls_public.jsonl", "w", encoding="utf8") as w:
             if "name" in c: c["player"] = pid(c.pop("name"))
             claims.append(c)
         o = dict(game=gid(game), t=r.get("t"), mode=r.get("mode"), ranked=r.get("ranked"), seats=r.get("game_players"),
-                 round=r.get("round"), table=r.get("table"), players=[pid(x) for x in (r.get("players") or [])],
-                 n_alive=r.get("n_alive"), claims=claims, claim=claim, caller=pid(r.get("caller")),
+                 round=r.get("round"), table=r.get("table"), players=seats_of(r.get("players")),
+                 n_alive=r.get("n_alive"), claims=claims, claim=claim, caller=pid(r.get("caller")), hands=hands_of(r.get("all_hands")),
                  caller_is_bot=r.get("caller_is_me"), claimer_is_bot=r.get("claimer_is_me"), lie=r.get("lie"),
                  revealed=r.get("revealed"), pulled=r.get("pulled"), devil=r.get("devil"), bot_hand=r.get("my_hand"),
                  bot_matching=r.get("my_real"))

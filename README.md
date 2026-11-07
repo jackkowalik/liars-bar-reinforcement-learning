@@ -75,14 +75,15 @@ Other measurements from the logs:
 
 The bot acts on public information only: claims, counts, timings and outcomes any player sees, plus its own hand. The
 game client receives every player's hand from the server; that leak was used to label logged data after the fact and was
-deliberately kept out of the live advisor and out of this repository. The bot played ranked
+deliberately kept out of the live advisor; the labelled hands are released in `data/`, the code that read them is not. The bot played ranked
 games against people who did not know they were playing against a machine, which the game's rules almost certainly prohibit.
 
 ## Dataset and weights
 
-`data/plays_public.jsonl` has 20,930 claims from 573 ranked games, 15,314 of them labelled true or bluff, and
-`data/calls_public.jsonl` has the 4,439 claims that were called, with the revealed cards. Player names are pseudonymised;
-see `data/SCHEMA.md`. `weights/` holds the networks the Rust code runs: `devil_mlp` (the one that played ranked),
+`data/plays_public.jsonl` has 20,930 claims from 573 ranked games, 15,314 of them labelled true or bluff with every
+seat's hidden hand at the moment of the claim, the claimer's hand and the cards actually thrown. `data/calls_public.jsonl`
+has the 4,439 claims that were called, with the revealed cards and the same hidden hands. Player names are pseudonymised
+consistently across both files; see `data/SCHEMA.md`. `weights/` holds the networks the Rust code runs: `devil_mlp` (the one that played ranked),
 `devil_tnet_r1v1` (the transformer) and `basic_ppo2` (non-Devil tables).
 
 ```
