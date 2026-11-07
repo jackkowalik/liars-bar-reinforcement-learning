@@ -11,8 +11,8 @@ To run the bot in the game rather than the simulator, see [INSTALL.md](INSTALL.m
 the weights are in the Releases page.
 
 ```
-git clone https://github.com/jackkowalik/liars-bar-deck-reinforcement-learning.git
-cd liars-bar-deck-reinforcement-learning/rust
+git clone https://github.com/jackkowalik/liars-bar-reinforcement-learning.git
+cd liars-bar-reinforcement-learning/rust
 cargo build --release
 target/release/liars fiteval --net ../weights/devil_mlp --opp rankedfit --players 4 --games 3000
 ```
@@ -40,9 +40,10 @@ uses `C:\liars` as its working directory; the simulator, harness and dataset hav
   times, calls, pulls, our own hand) and executes the advisor's chosen action through the game's own input methods.
 - **Advisor** (`rust/src/watch.rs`): tails the log, rebuilds the game state, runs the policy, prints its reasoning and
   writes the action for the mod. Every policy switch is one environment variable.
-- **Data pipeline** (`nn/reveals.py`, `data/`): labels every opponent throw as true or bluff after the session, giving
-  ground truth for all opponent plays (about 10,000 throws and 4,400 called claims). Labels are used offline only, never
-  by the live advisor.
+- **Data pipeline** (`data/`, `research/export_dataset.py`): labels every opponent throw as true or bluff after the
+  session, giving ground truth for all opponent plays (about 10,000 throws and 4,400 called claims). The labelling script
+  reads the client-side hand leak and is not released; its output is the dataset in `data/`. Labels are used offline
+  only, never by the live advisor.
 - **Fitted opponent population** (`research/fit_population.py`, `agents::FitHuman`): bluff rate, call rate, throw sizes
   and dump habits fitted to the labelled logs, with per-game variation.
 - **Harness** (`liars fiteval`): any policy variant against the fitted population, thousands of games in seconds, same

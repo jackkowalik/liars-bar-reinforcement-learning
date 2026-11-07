@@ -11,8 +11,8 @@
 Releases 页面。
 
 ```
-git clone https://github.com/jackkowalik/liars-bar-deck-reinforcement-learning.git
-cd liars-bar-deck-reinforcement-learning/rust
+git clone https://github.com/jackkowalik/liars-bar-reinforcement-learning.git
+cd liars-bar-reinforcement-learning/rust
 cargo build --release
 target/release/liars fiteval --net ../weights/devil_mlp --opp rankedfit --players 4 --games 3000
 ```
@@ -38,8 +38,8 @@ python -c "import json; r=json.loads(open('data/plays_public.jsonl').readline())
   我们自己的手牌），并通过游戏自身的输入方法执行顾问选定的动作。
 - **顾问**（`rust/src/watch.rs`）：跟踪日志，重建对局状态，运行策略，打印推理过程，并把动作写给 mod。每个策略开关
   都是一个环境变量。
-- **数据流水线**（`nn/reveals.py`、`data/`）：在对局结束后把每一次对手出牌标注为真话或虚张，从而为所有对手出牌提供
-  真实标签（约 10,000 次出牌和 4,400 次被质疑的宣称）。标签只离线使用，实时顾问从不使用。
+- **数据流水线**（`data/`、`research/export_dataset.py`）：在对局结束后把每一次对手出牌标注为真话或虚张，从而为所有对手出牌提供
+  真实标签（约 10,000 次出牌和 4,400 次被质疑的宣称）。标注脚本读取客户端的手牌泄漏，不予发布；它的输出就是 `data/` 中的数据集。标签只离线使用，实时顾问从不使用。
 - **拟合的对手群体**（`research/fit_population.py`、`agents::FitHuman`）：根据带标签的日志拟合虚张率、质疑率、出牌张数
   和清手习惯，并带有每局的随机变化。
 - **评测工具**（`liars fiteval`）：任意策略变体对阵拟合群体，几秒钟内跑完数千局，A/B 使用相同随机种子。每个改动上线前
