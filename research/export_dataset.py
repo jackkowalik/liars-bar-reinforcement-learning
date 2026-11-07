@@ -1,6 +1,7 @@
 """Export the labelled human-play dataset for release.
 Input: data/plays.jsonl (every claim in every logged game, with was_bluff from post-hoc labelling) and data/reveals.jsonl
-(claims that were called, with the revealed cards). Output: data/plays_public.jsonl, data/calls_public.jsonl.
+(claims that were called, with the revealed cards). Output: data/plays_public.jsonl (labelled claims with hands), data/plays_unlabelled.jsonl (early games without
+snapshots), data/calls_public.jsonl.
 Player names are replaced by stable pseudonyms (salted hash); fields are pseudonymised consistently across files. Hidden hands (every seat's cards at the time of the claim, the claimer's hand
 and the cards actually thrown) are included where known: they are the ground truth behind the labels.
 Usage: python export_dataset.py <salt> [out_dir]"""
@@ -26,7 +27,8 @@ def hands_of(ah):
 def gid(game):
     return "g" + hashlib.sha1((salt + "|" + str(game)).encode("utf8")).hexdigest()[:10]
 np = nc = 0; names = set()
-with open(f"{out}/plays_public.jsonl", "w", encoding="utf8") as w:
+wl = open(f"{out}/plays_public.jsonl", "w", encoding="utf8"); wu = open(f"{out}/plays_unlabelled.jsonl", "w", encoding="utf8")
+with wl, wu:
     for l in open("C:/liars/data/plays.jsonl", encoding="utf8"):
         try: r = json.loads(l)
         except ValueError: continue
@@ -45,7 +47,8 @@ with open(f"{out}/plays_public.jsonl", "w", encoding="utf8") as w:
                  claimer_hand=r.get("claimer_hand"), thrown=r.get("played_cards"), hands=hands_of(r.get("all_hands")),
                  bot_hand=r.get("my_hand") if r.get("play_is_me") is not None else None, bot_matching=r.get("my_real"),
                  was_bluff=r.get("was_bluff"), label_source=r.get("label_source"))
-        w.write(json.dumps(o, ensure_ascii=False) + "\n"); np += 1
+        (wl if o["was_bluff"] is not None else wu).write(json.dumps(o, ensure_ascii=False) + "
+"); np += 1
 with open(f"{out}/calls_public.jsonl", "w", encoding="utf8") as w:
     for l in open("C:/liars/data/reveals.jsonl", encoding="utf8"):
         try: r = json.loads(l)

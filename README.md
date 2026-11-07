@@ -80,8 +80,9 @@ games against people who did not know they were playing against a machine, which
 
 ## Dataset and weights
 
-`data/plays_public.jsonl` has 20,930 claims from 573 ranked games, 15,314 of them labelled true or bluff with every
-seat's hidden hand at the moment of the claim, the claimer's hand and the cards actually thrown. `data/calls_public.jsonl`
+`data/plays_public.jsonl` has 15,314 claims from 487 ranked games, each labelled true or bluff with every seat's hidden hand
+at the moment of the claim, the claimer's hand and the cards actually thrown (5,616 earlier unlabelled claims are in
+`data/plays_unlabelled.jsonl`). `data/calls_public.jsonl`
 has the 4,439 claims that were called, with the revealed cards and the same hidden hands. Player names are pseudonymised
 consistently across both files; see `data/SCHEMA.md`. `weights/` holds the networks the Rust code runs: `devil_mlp` (the one that played ranked),
 `devil_tnet_r1v1` (the transformer) and `basic_ppo2` (non-Devil tables).

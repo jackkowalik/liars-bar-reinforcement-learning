@@ -1,6 +1,6 @@
 # Dataset
 
-Two JSONL files exported by `research/export_dataset.py` from the bot's game logs (ranked Devil-mode tables, 2 to 4
+Three JSONL files exported by `research/export_dataset.py` from the bot's game logs (ranked Devil-mode tables, 2 to 4
 seats). Player names are replaced by stable pseudonyms (salted SHA-1 prefix, `p…`), game ids likewise (`g…`); the same
 pseudonym refers to the same player across both files and across games. Every seat's hidden hand at the time of each
 labelled claim is included (`hands`), along with the claimer's hand and the cards actually thrown: this is the ground truth
@@ -9,9 +9,10 @@ sessions, so identify the bot by the `*_is_bot` flags, not by pseudonym.
 
 Cards: `K`, `Q`, `A`, `Joker` (matches any table card), `Devil` (Devil-mode card). `table` is the round's table card.
 
-## plays_public.jsonl (20,930 rows; 15,314 with a label)
+## plays_public.jsonl (15,314 rows, all labelled, hands known)
 
-One row per claim (throw) by any player.
+One row per claim (throw) by any player in the 487 games with hand snapshots. `plays_unlabelled.jsonl` (5,616 rows) has the
+same fields for the earliest 86 games, where hands were not recorded and `was_bluff`, `hands`, `claimer_hand` and `thrown` are null.
 
 | field | meaning |
 |---|---|
@@ -26,7 +27,7 @@ One row per claim (throw) by any player.
 | claimer_hand | the claimer's full hand before the throw (labelled rows) |
 | thrown | the cards actually thrown (13,273 rows; null where only the count could be inferred) |
 | hands | every seat's hand at the time, keyed by player pseudonym (labelled rows) |
-| was_bluff | true if any thrown card did not match the table card (Joker counts as matching); null when unlabelled |
+| was_bluff | true if any thrown card did not match the table card (Joker counts as matching) |
 | label_source | "diff" (hand change observed) or "count" (inferred from counts) |
 
 ## calls_public.jsonl (4,439 rows)
