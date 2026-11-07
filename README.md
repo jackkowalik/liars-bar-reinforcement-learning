@@ -1,5 +1,7 @@
 # Liar's Bar ranked bot
 
+English | [中文](README.zh-CN.md) | [Русский](README.ru.md)
+
 A bot that plays Liar's Deck (Devil mode) in the ranked queue of Liar's Bar using only what a human player at the table can
 see. It went from a 0 rating to the leaderboard in about 24 hours (~3000 rating points). 
 
@@ -34,7 +36,7 @@ uses `C:\liars` as its working directory; the simulator, harness and dataset hav
 - **Policies** (`rust/src/nn.rs`, `nn/`): an MLP trained with PPO in self-play against a league of scripted opponents, and a
   transformer that reads the full round history with seat identities, distilled from the MLP and then trained with PPO.
   Both export to a flat weights file the Rust code evaluates with no dependencies.
-- **Game-side mod** (`tells/`, MelonLoader, C#): writes a public event log for every game (seats, tiers, claims, think
+- **Game-side mod** (`mod/`, MelonLoader, C#): writes a public event log for every game (seats, tiers, claims, think
   times, calls, pulls, our own hand) and executes the advisor's chosen action through the game's own input methods.
 - **Advisor** (`rust/src/watch.rs`): tails the log, rebuilds the game state, runs the policy, prints its reasoning and
   writes the action for the mod. Every policy switch is one environment variable.
