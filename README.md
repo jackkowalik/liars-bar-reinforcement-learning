@@ -5,6 +5,14 @@ English | [中文](README.zh-CN.md) | [Русский](README.ru.md)
 A bot that plays Liar's Deck (Devil mode) in the ranked queue of Liar's Bar using only what a human player at the table can
 see. It went from a 0 rating to the leaderboard in about 24 hours (~3000 rating points). 
 
+> **Update, 13 Nov 2026.** I posted this repo in the Liar's Bar Discord the day I made it public. About a week later, on
+> 13 Nov, the developers shipped an update with strengthened cheat protection, a season reset to 0 with monthly seasons,
+> in-game player reports and Easy Anti-Cheat announced. Cheating had been a problem since the game's release, so this is
+> the first real fix for it. The bot's last run ended that afternoon at a rating of about 8,700 and a top 20 spot on the
+> leaderboard. The update also broke the mod (a class it used to detect the main menu is gone). I am not updating it for
+> the new version, and I am glad they finally made the change! The simulator, harness, dataset and weights are unaffected and
+> remain the point of this repo.
+
 ## Quick start
 
 To run the bot in the game rather than the simulator, see [INSTALL.md](INSTALL.md); prebuilt `liars.exe`, the mod DLL and
